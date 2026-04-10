@@ -1,0 +1,13 @@
+{
+  "exclusions": [
+    "Salary",
+    "Payroll",
+    "PAYG",
+    "Internal Transfer",
+    "Opening Balance",
+    "Loan Repayment",
+    "GST Refund",
+    "Director Drawing"
+  ],
+  "notes": "Case-insensitive partial match. Add any description fragment to exclude."
+}
