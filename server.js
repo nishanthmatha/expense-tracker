@@ -31,9 +31,21 @@ app.post('/api/connect', async (req, res) => {
 // ── GET /api/callback ─────────────────────────────────────────────────────────
 // Basiq redirects the user back here after they connect their bank.
 app.get('/api/callback', (req, res) => {
-  const { userId, jobId, error } = req.query;
-  if (error) return res.redirect(`http://localhost:3001/?error=${error}`);
-  res.redirect(`http://localhost:3001/dashboard?userId=${userId}&jobId=${jobId}`);
+  const { jobId, state, error } = req.query;
+  const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3001';
+
+  if (error) return res.redirect(`${FRONTEND_URL}/?error=${encodeURIComponent(error)}`);
+
+  let userId, returnTo;
+  try {
+    const parsed = JSON.parse(decodeURIComponent(state));
+    userId  = parsed.userId;
+    returnTo = parsed.returnTo || FRONTEND_URL + '/dashboard';
+  } catch {
+    return res.redirect(`${FRONTEND_URL}/?error=bad_state`);
+  }
+
+  res.redirect(`${returnTo}?userId=${userId}&jobId=${jobId}`);
 });
 
 // ── GET /api/job/:jobId ───────────────────────────────────────────────────────
